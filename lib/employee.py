@@ -56,6 +56,16 @@ class Employee:
         else:
             raise ValueError(
                 "department_id must reference a department in the database")
+        
+
+    def reviews(self):
+        from review import Review
+        sql = """
+        SELECT * FROM reviews
+        WHERE employee_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.id, )).fetchall()
+        return [Review.instance_from_db(row) for row in rows]
 
     @classmethod
     def create_table(cls):
@@ -172,6 +182,8 @@ class Employee:
 
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+
 
     @classmethod
     def find_by_name(cls, name):
